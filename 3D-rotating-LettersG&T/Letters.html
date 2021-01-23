@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MY LETTERS</title>
+</head>
+<body style="background-color: #333333; text-align: center;">
+    <canvas id="glcanvas" width="640" height="640"></canvas>
+    
+    <script id="vertex-shader" type="x-shader/x-vertex">
+        attribute vec4 vPosition;
+        attribute vec3 vertColor;
+        varying vec3 fragColor;
+        uniform vec3 thetaG;
+        uniform vec3 thetaT;
+        
+        attribute vec4 tPosition;
+        void main(){
+            vec3 anglesG = radians( thetaG );
+            vec3 cosinusG = cos( anglesG );
+            vec3 sinusG = sin( anglesG );
+            vec3 anglesT = radians( thetaT );
+            vec3 cosinusT = cos( anglesT );
+            vec3 sinusT = sin( anglesT );
+            
+            mat4 rotateX = mat4(1.0,  0.0,  0.0, 0.0,
+                                0.0,  cosinusG.x,  sinusG.x, 0.0,
+                                0.0, -sinusG.x,  cosinusG.x, 0.0,
+                                0.0,  0.0,  0.0, 1.0);
+
+            mat4 rotateY = mat4(cosinusG.y, 0.0, -sinusG.y, 0.0,
+                                0.0, 1.0,  0.0, 0.0,
+                                sinusG.y, 0.0,  cosinusG.y, 0.0,
+                                0.0, 0.0,  0.0, 1.0);
+                                
+            mat4 rotateZ = mat4(cosinusG.z, sinusG.z, 0.0, 0.0,
+                                -sinusG.z,  cosinusG.z, 0.0, 0.0,
+                                0.0,  0.0, 1.0, 0.0,
+                                0.0,  0.0, 0.0, 1.0);
+
+                                
+            mat4 rotateXt = mat4(1.0,  0.0,  0.0, 0.0,
+                                0.0,  cosinusT.x,  sinusT.x, 0.0,
+                                0.0, -sinusT.x,  cosinusT.x, 0.0,
+                                0.0,  0.0,  0.0, 1.0);
+
+            mat4 rotateYt = mat4(cosinusT.y, 0.0, -sinusT.y, 0.0,
+                                0.0, 1.0,  0.0, 0.0,
+                                sinusT.y, 0.0,  cosinusT.y, 0.0,
+                                0.0, 0.0,  0.0, 1.0);
+                                
+            mat4 rotateZt = mat4(cosinusT.z, sinusT.z, 0.0, 0.0,
+                                -sinusT.z,  cosinusT.z, 0.0, 0.0,
+                                0.0,  0.0, 1.0, 0.0,
+                                0.0,  0.0, 0.0, 1.0);
+
+
+    gl_Position = rotateZ * rotateY * rotateX * vPosition;
+    gl_Position.z = -gl_Position.z;
+    fragColor = vertColor;
+           
+        }
+     </script>
+   <script id="fragment-shader" type="x-shader/x-fragment"> 
+    precision mediump float;
+    varying vec3 fragColor;
+    void main() {
+       gl_FragColor = vec4(fragColor, 1.0);
+    }
+ </script>
+    <script src="initShaders.js"></script>
+    <script src="MV.js"></script>
+    <script src="Letters.js"></script>
+<br>
+    <style>
+        .Buttons {
+            padding: 10px;
+            background-color: seagreen;
+            color: #eaeaea;
+        }
+        .Buttons:focus {
+            background-color: red;
+        }
+    </style>
+    <button class="Buttons" id="colorButton1">Main Color</button>
+    <button class="Buttons" id="colorButton2">Colorful</button>
+    <button class="Buttons" id= "GRotateX">Rotate X for Letter G</button>
+    <button class="Buttons" id= "GRotateY">Rotate Y for Letter G</button>
+    <button class="Buttons" id= "GRotateZ">Rotate Z for Letter G</button>
+    <button class="Buttons" id= "TRotateX">Rotate X for Letter T</button>
+    <button class="Buttons" id= "TRotateY">Rotate Y for Letter T</button>
+    <button class="Buttons" id= "TRotateZ">Rotate Z for Letter T</button>
+    <br> 
+    <button class="Buttons" id="increaseSpeed">Speed UP</button>
+    <button class="Buttons" id="decreaseSpeed">Speed DOWN</button>
+</body>
+</html>
